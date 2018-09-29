@@ -127,11 +127,18 @@ public MCP9808(I2cDeviceSynch deviceClient)
 }
 ```
 
-The next thing we can do is create a way to configure this specific sensor in the Robot Controller along with the rest of the hardware. We do this by adding an annotation to the class called I2CSensor, which has 3 strings for us to set: name, description, and an XML tag. The name is what appears in the robot configuration menu, and should be something human readable. The XML tag is what identifies the sensor in the code, and needs to be different for every sensor. This needs to follow XML naming rules, so no spaces. The description is a message that appears in help menus for humans to understand what it is. Make sure all 3 are descriptive, like so:
+The next thing we can do is create a way to configure this specific sensor in the Robot Controller along with the rest of the hardware. We do this by adding an annotation to the class called `I2cDeviceType`, which must be accompanied by an annotation called `DeviceProperties`. `DeviceProperties` has 2 strings that must be set: a name, and an XML tag. The name is what appears in the robot configuration menu, and should be something human readable. The XML tag is what identifies the sensor in the code, and needs to be different for every sensor. This needs to follow XML naming rules, so no spaces. Make sure the values you pick are descriptive, like so:
 
 ```
-@I2cSensor(name = "MCP9808 Temperature Sensor", description = "Temperature Sensor from Adafruit", xmlTag = "MCP9808")
+@I2cDeviceType
+@DeviceProperties(name = "MCP9808 Temperature Sensor", xmlTag = "MCP9808")
 public class MCP9808 extends I2cDeviceSynchDevice<I2cDeviceSynch>
+```
+
+Optionally, you can add parameters to `DeviceProperties` that set a description and/or limit the sensor to use with a particular type of control system (REV or Modern Robotics). The description should be insertable into a sentence that describes what the sensor is. Here is an example of `DeviceProperties` with both of these options used.
+
+```
+@DeviceProperties(description = "an MCP9808 temperature sensor", compatibleControlSystems = ControlSystem.REV_HUB, name = "MCP9808 Temperature Sensor", xmlTag = "MCP9808",)`
 ```
 
 Now in the robot configuration menu, we can see that the sensor has been added to the list of I2C devices:
